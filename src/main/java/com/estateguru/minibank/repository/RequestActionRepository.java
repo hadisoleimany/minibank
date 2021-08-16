@@ -20,5 +20,6 @@ public interface RequestActionRepository extends CrudRepository<RequestAction,Lo
            , Date createDate);
 
     List<RequestAction> findAllByStatusAndCreateDateAfterAndCreateDateBefore(RequestStatus status,Date from,Date to);
+    List<RequestAction> findAllByTransactionType(TransactionType type);
 
 }

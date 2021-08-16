@@ -23,10 +23,12 @@ public class BankAccount {
     private Customer customer;
     @OneToOne(fetch = FetchType.EAGER)
     private Currency currency;
+    @ManyToOne
+    private User createdBy;
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdate;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
     @OneToMany(mappedBy = "account",fetch = FetchType.LAZY)
-    private  List<Transaction> transactions;
+    private  List<BankTransaction> bankTransactions;
 }

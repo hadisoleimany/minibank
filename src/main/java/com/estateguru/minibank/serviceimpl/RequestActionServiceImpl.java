@@ -11,6 +11,7 @@ import com.estateguru.minibank.service.RequestActionService;
 import com.estateguru.minibank.util.Utils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -69,7 +70,7 @@ public class RequestActionServiceImpl implements RequestActionService {
     }
 
     @Override
-    public RequestAction rejectRequest(RequestActionDto rad) {
+        public RequestAction rejectRequest(RequestActionDto rad) {
         RequestAction rqa = getRequestActionByRequestActionDto(rad);
         rqa.setStatus(RequestStatus.REJECT);
         rqa.setUpdateDate(new Date());
@@ -79,12 +80,12 @@ public class RequestActionServiceImpl implements RequestActionService {
 
     @Override
     public void rejectAllRequestByDate() {
-
+        // impl
     }
 
     @Override
     public void rejectAllRequestByUser() {
-
+    // impl
     }
 
     @Override
@@ -115,4 +116,16 @@ public class RequestActionServiceImpl implements RequestActionService {
                 , ra.getAmount(), ra.getCreateDate(), ra.getUpdateDate(), ra.getDescription());
     }
 
+    @Override
+    public  List<RequestActionDto> getAllRequestByType(TransactionType type) {
+        List<RequestAction> allRequest = repository.findAllByTransactionType(type);
+        List<RequestActionDto> actionDtos=new ArrayList<>();
+
+        allRequest.forEach(c->actionDtos.add(new RequestActionDto(c.getTransactionType(),
+                c.getStatus(),
+                Utils.convertBankAccountToBankAccountDto(c.getSourceAccount()),
+                Utils.convertBankAccountToBankAccountDto(c.getDestinationAccount()),c.getAmount(),
+                c.getCreateDate(),c.getUpdateDate(),c.getDescription())));
+        return actionDtos;
+    }
 }

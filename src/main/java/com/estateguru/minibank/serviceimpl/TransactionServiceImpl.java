@@ -2,7 +2,7 @@ package com.estateguru.minibank.serviceimpl;
 
 import com.estateguru.minibank.dto.CustomerDto;
 import com.estateguru.minibank.model.BankAccount;
-import com.estateguru.minibank.model.Transaction;
+import com.estateguru.minibank.model.BankTransaction;
 import com.estateguru.minibank.model.TransactionType;
 import com.estateguru.minibank.repository.TransactionRepository;
 import com.estateguru.minibank.service.TransactionService;
@@ -21,48 +21,48 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void saveTransaction(Transaction transaction) {
-        transaction.setTransactionDate(new Date());
-        repository.save(transaction);
+    public void saveTransaction(BankTransaction bankTransaction) {
+        bankTransaction.setTransactionDate(new Date());
+        repository.save(bankTransaction);
     }
 
     @Override
-    public List<Transaction> findAllTransactionByBankAccount(BankAccount account) {
+    public List<BankTransaction> findAllTransactionByBankAccount(BankAccount account) {
         return repository.findAllByAccount(account);
     }
 
     @Override
-    public List<Transaction> findAllTransactionByBankAccountAndDeposit(BankAccount account) {
+    public List<BankTransaction> findAllTransactionByBankAccountAndDeposit(BankAccount account) {
         return repository.findAllByAccountAndTransactionType(account, TransactionType.Deposit);
     }
 
     @Override
-    public List<Transaction> findAllTransactionByBankAccountAndWithdrawal(BankAccount account) {
+    public List<BankTransaction> findAllTransactionByBankAccountAndWithdrawal(BankAccount account) {
         return repository.findAllByAccountAndTransactionType(account, TransactionType.Withdrawal);
     }
 
     @Override
-    public List<Transaction> findAllTransactionByBankAccountAndTransfer(BankAccount account) {
+    public List<BankTransaction> findAllTransactionByBankAccountAndTransfer(BankAccount account) {
         return repository.findAllByAccountAndTransactionType(account, TransactionType.Transfer);
     }
 
     @Override
-    public List<Transaction> findAllTransactionByTransactionDate(BankAccount account, Date date) {
+    public List<BankTransaction> findAllTransactionByTransactionDate(BankAccount account, Date date) {
         return repository.findAllByAccountAndTransactionDate(account,date);
     }
 
     @Override
-    public List<Transaction> findAllTransactionByTransactionDate(BankAccount account, Date fromDate, Date toDate) {
+    public List<BankTransaction> findAllTransactionByTransactionDate(BankAccount account, Date fromDate, Date toDate) {
         return repository.findAllByAccountAndTransactionDateAfterAndTransactionDateBefore(account,fromDate,toDate);
     }
 
     @Override
-    public List<Transaction> findAllTransactionByCustomer(CustomerDto customerDto) {
+    public List<BankTransaction> findAllTransactionByCustomer(CustomerDto customerDto) {
         return repository.findAllByCustomer(customerDto.getCode());
     }
 
     @Override
-    public List<Transaction> findAllTransactionByCreationDate(Date creationDate) {
+    public List<BankTransaction> findAllTransactionByCreationDate(Date creationDate) {
         return repository.findAllByTransactionDate(creationDate);
     }
 }

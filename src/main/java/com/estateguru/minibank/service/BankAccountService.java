@@ -9,13 +9,13 @@ import com.estateguru.minibank.model.User;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 
 public interface BankAccountService {
-    void deposit(User user, BigDecimal amount);
-    void withdrawal(User user, BigDecimal amount);
-    void getBalance(User user, BigDecimal amount);
+    BankAccountDto getBalance(String accountNumber);
+    List<BankAccountDto> getAllAccountByCustomer(String customerCode);
     Optional<BankAccount> getBankAccount(BankAccountDto dto);
     BankAccount getBankAccountById(Long id);
     BankAccount save(BankAccount account);

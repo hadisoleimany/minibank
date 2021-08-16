@@ -3,10 +3,9 @@ package com.estateguru.minibank.serviceimpl;
 import com.estateguru.minibank.dto.CurrencyDto;
 import com.estateguru.minibank.dto.CustomerDto;
 import com.estateguru.minibank.dto.RequestActionDto;
-import com.estateguru.minibank.model.BankAccount;
-import com.estateguru.minibank.model.RequestAction;
-import com.estateguru.minibank.model.RequestStatus;
-import com.estateguru.minibank.model.TransactionType;
+import com.estateguru.minibank.dto.UserDto;
+import com.estateguru.minibank.model.*;
+import com.estateguru.minibank.repository.UserRepository;
 import com.estateguru.minibank.service.CurrencyService;
 import com.estateguru.minibank.service.CustomerService;
 import com.estateguru.minibank.service.RequestActionService;
@@ -20,8 +19,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 public class RequestActionServiceImplTest {
 
@@ -33,21 +34,31 @@ public class RequestActionServiceImplTest {
     private CustomerService customerService;
     @Autowired
     private CurrencyService currencyService;
+    @Autowired
+    private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
         customerService.saveCustomer(getNewCustomerDto());
-        currencyService.saveCurrency(new CurrencyDto("US Dollar", "USD"));
+        Currency usd = currencyService.findCurrencyByCode("usd");
+        if (usd == null) {
+            currencyService.saveCurrency(new CurrencyDto("US Dollar", "USD"));
+        }
+        Optional<User> byUserName = userRepository.findByUserName("hadi");
+        if (byUserName.isEmpty()) {
+            userService.signUp(new UserDto("hadi", "100", "hadi", "5699", RoleType.ADMIN));
+        }
     }
+
     @Test
     @Transactional
     void sendRequest_succeed() {
         RequestActionDto rad = getNewRequestActionDto();
         RequestAction requestAction = service.sendRequest(rad);
         assertNotNull(requestAction);
-        assertEquals(new BigDecimal(1000).longValue(),requestAction.getAmount().longValue());
-        assertEquals(RequestStatus.PEND,requestAction.getStatus());
-        assertEquals(TransactionType.Deposit,requestAction.getTransactionType());
+        assertEquals(new BigDecimal(1000).longValue(), requestAction.getAmount().longValue());
+        assertEquals(RequestStatus.PEND, requestAction.getStatus());
+        assertEquals(TransactionType.Deposit, requestAction.getTransactionType());
     }
 
     @Test
@@ -58,8 +69,9 @@ public class RequestActionServiceImplTest {
         rad.setStatus(RequestStatus.PEND);
         rad.setCreateDate(requestAction.getCreateDate());
         RequestAction cancelRequestAction = service.cancelRequest(rad);
-        assertEquals(RequestStatus.CANCEL,cancelRequestAction.getStatus());
+        assertEquals(RequestStatus.CANCEL, cancelRequestAction.getStatus());
     }
+
     @Test
     @Transactional
     void acceptRequest_succeed() {
@@ -68,8 +80,9 @@ public class RequestActionServiceImplTest {
         rad.setStatus(RequestStatus.PEND);
         rad.setCreateDate(requestAction.getCreateDate());
         RequestAction cancelRequestAction = service.acceptRequest(rad);
-        assertEquals(RequestStatus.ACCEPT,cancelRequestAction.getStatus());
+        assertEquals(RequestStatus.ACCEPT, cancelRequestAction.getStatus());
     }
+
     @Test
     @Transactional
     void rejectRequest_succeed() {
@@ -78,17 +91,20 @@ public class RequestActionServiceImplTest {
         rad.setStatus(RequestStatus.PEND);
         rad.setCreateDate(requestAction.getCreateDate());
         RequestAction cancelRequestAction = service.rejectRequest(rad);
-        assertEquals(RequestStatus.REJECT,cancelRequestAction.getStatus());
+        assertEquals(RequestStatus.REJECT, cancelRequestAction.getStatus());
     }
+
     private RequestActionDto getNewRequestActionDto() {
         CustomerDto customer = getNewCustomerDto();
-        BankAccount souAcc = userService.createAccount(customer, "1", "USD", new BigDecimal(10));
+        Optional<User> user = userRepository.findByUserName("hadi");
+        BankAccount souAcc = userService.createAccount(user.get(), customer, "1", "USD", new BigDecimal(10));
         RequestActionDto rad = new RequestActionDto();
         rad.setAmount(new BigDecimal(1000));
         rad.setTransactionType(TransactionType.Deposit);
         rad.setSourceAccount(Utils.convertBankAccountToBankAccountDto(souAcc));
         return rad;
     }
+
     private CustomerDto getNewCustomerDto() {
         CustomerDto cu = new CustomerDto();
         cu.setName("Hadi");

@@ -17,10 +17,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+    @Column(nullable = false,unique = true)
     private String code;
-    private boolean admin;
-    private String username;
+    @Column(nullable = false,unique = true)
+    private String userName;
+    @Column(nullable = false)
     private String password;
+    @Enumerated(EnumType.ORDINAL)
+    private RoleType role;
+    @Transient
+    private Boolean loggedIn;
     @OneToMany(mappedBy = "user")
     private List<LimitationUserCurrency> limitationUserCurrency;
 }

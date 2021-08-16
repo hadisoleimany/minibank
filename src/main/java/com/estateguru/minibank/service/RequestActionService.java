@@ -2,6 +2,7 @@ package com.estateguru.minibank.service;
 
 import com.estateguru.minibank.dto.RequestActionDto;
 import com.estateguru.minibank.model.RequestAction;
+import com.estateguru.minibank.model.TransactionType;
 
 import java.util.Date;
 import java.util.List;
@@ -28,4 +29,6 @@ public interface RequestActionService {
     List<RequestAction> getAcceptRequest(Date fromDate, Date toDate);
 
     RequestActionDto convertRequestActionToRequestActionDto(RequestAction ra);
+
+    List<RequestActionDto>  getAllRequestByType(TransactionType type);
 }

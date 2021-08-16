@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -23,4 +24,6 @@ public class Currency {
     private String name;
     @Column(unique = true)
     private String code;
+    @OneToMany(mappedBy = "currency")
+    private List<CurrencyRateDaily> rateDaily;
 }

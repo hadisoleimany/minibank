@@ -7,6 +7,7 @@ import com.estateguru.minibank.repository.CurrencyRepository;
 import com.estateguru.minibank.service.CurrencyService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -21,11 +22,16 @@ public class CurrencyServiceImpl implements CurrencyService {
     public Currency findCurrencyByCode(String code) {
         return repository.findCurrencyByCode(code.toUpperCase()).orElseThrow(
                 ()-> new BusinessException("Currency Does Not Exist with Code : "+ code));
-
     }
 
     @Override
     public Currency saveCurrency(CurrencyDto currencyDto) {
         return repository.save(new Currency(currencyDto.getName(),currencyDto.getCode().toUpperCase()));
+    }
+
+    @Override
+    public BigDecimal convertCurrency(BigDecimal amount, Currency mainCurrency, Currency toCurrency) {
+        // TODO: 8/14/21 need impl 
+        return null;
     }
 }

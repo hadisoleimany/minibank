@@ -14,7 +14,7 @@ public class LimitationUserCurrency {
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
     @OneToOne
     private Currency currency;
